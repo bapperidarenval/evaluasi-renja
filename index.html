@@ -3,6 +3,7 @@
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbx76skUY2ibyCvkZGwIlHFk3ZpFoQq2ycyOrNo4G9iMfVtEy-wq6jv7JfA5QzmmEewwyw/exec';   // tempel URL Web App Apps Script di antara tanda kutip (berakhiran /exec)
 const KEY='evaluasirenja2026';       // kata sandi, harus sama dengan KEY di Code.gs
+const IKU_BATASI_100=false;   // IKU: true = capaian maksimal 100%, false = boleh lebih dari 100%
 </script>
 <!-- =============================================================================== -->
 <html lang="id"><head><meta charset="utf-8">
@@ -69,10 +70,10 @@ button.pri{background:var(--ac)}
 .sc{margin-top:16px;padding-top:12px;border-top:1px solid var(--bd)}.sc>h4{margin:0 0 10px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--mu)}
 .f2{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:12px}.ifl{display:block}.ifl>span{display:block;font-size:12px;font-weight:600;margin-bottom:4px}
 .ifl input,.ifl textarea{width:100%;background:var(--ed)}.ifl textarea{resize:vertical;line-height:1.45}.sc>.ifl{margin-bottom:12px}
-.res{background:var(--gr);border-radius:8px;padding:8px 12px}.res .big{font-size:24px;font-weight:600;margin-right:8px}.nv{display:flex;justify-content:space-between;margin-top:16px}.stat.ok{color:var(--ok)}.pill:empty{display:none}.f2+.tw4{margin-top:0}.tw4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:640px){.tw4{grid-template-columns:repeat(2,1fr)}}.twc{background:var(--gr);border-radius:8px;padding:10px}.twc>b{display:block;font-size:12px;margin-bottom:4px}.twc input{width:100%;background:var(--ed);margin-bottom:8px}.twc .big{font-size:18px;font-weight:600;margin-right:6px}.cc{display:flex;gap:6px;align-items:center;flex-wrap:wrap}</style></head><body>
+.res{background:var(--gr);border-radius:8px;padding:8px 12px}.res .big{font-size:24px;font-weight:600;margin-right:8px}.nv{display:flex;justify-content:space-between;margin-top:16px}.stat.ok{color:var(--ok)}.pill:empty{display:none}.f2+.tw4{margin-top:0}.tw4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:640px){.tw4{grid-template-columns:repeat(2,1fr)}}.twc{background:var(--gr);border-radius:8px;padding:10px}.twc>b{display:block;font-size:12px;margin-bottom:4px}.twc input{width:100%;background:var(--ed);margin-bottom:8px}.twc .big{font-size:18px;font-weight:600;margin-right:6px}.cc{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.mn{font-weight:700;padding:6px 18px}.sp{display:inline-block;width:1px;height:22px;background:var(--bd);margin:0 6px;vertical-align:middle}#subR,#subI{display:inline-flex;gap:8px}#subR[hidden],#subI[hidden]{display:none}</style></head><body>
 <header><h1>Evaluasi Hasil terhadap Renja Perangkat Daerah – Triwulan IV Tahun 2026</h1>
 <div class="sub">Bapperida Kabupaten Indramayu</div></header>
-<div class="bar"><button id="tI" class="pri">Isian</button><button id="tD">Dashboard</button><button id="tIku">IKU</button><span class="st" id="st">Memuat…</span></div>
+<div class="bar"><button id="mR" class="pri mn">Renja</button><button id="mI" class="mn">IKU</button><span class="sp"></span><span id="subR"><button id="tI" class="pri">Isian</button><button id="tD">Dashboard</button></span><span id="subI" hidden><button id="ikuTI" class="pri">Isian IKU</button><button id="ikuTD">Dashboard IKU</button><button id="ikuXl">Unduh Excel IKU</button></span><span class="st" id="st">Memuat…</span></div>
 <div id="vIsi"><div class="bar">
 <input id="q" placeholder="Cari kode / sub kegiatan…" size="26">
 <select id="fs"><option value="">Semua status</option><option value="x">Belum lengkap TW IV</option><option value="v">Sudah lengkap TW IV</option></select>
@@ -90,8 +91,7 @@ button.pri{background:var(--ac)}
 </thead><tbody id="tb"></tbody></table></div>
 <h2 style="margin:14px 20px 0;font-size:15px">Faktor Pendorong &amp; Penghambat (bidang terpilih)</h2><div class="foot" id="foot"></div>
 </div><div id="vDash" hidden></div>
-<div id="vIku" hidden><div class="bar"><button id="ikuTI" class="pri">Isian IKU</button><button id="ikuTD">Dashboard IKU</button>
-<button id="ikuXl">Unduh Excel IKU</button></div>
+<div id="vIku" hidden>
 <div id="ikuIsi"></div><div id="ikuDash" hidden></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script type="application/json" id="ikuseed">[{"id": "iku_1", "no": "1", "sasaran": "Meningkatnya efektivitas perencanaan pembangunan daerah", "ind": "Tingkat ketercapaian sasaran dan program prioritas pembangunan daerah", "rumus": "(Jumlah indikator sasaran daerah dan program prioritas daerah yang tercapai ÷ dengan jumlah seluruh indikator sasaran daerah dan program prioritas daerah) x 100%", "sat": "Persen", "F": 86, "g": 87.57, "h": 81, "pj": "Bidang Perencanaan, Pengendalian dan Evaluasi"}, {"id": "iku_2", "no": "2", "sasaran": "Meningkatnya efektivitas perencanaan pembangunan daerah", "ind": "Tingkat ketercapaian sasaran perangkat daerah pada perencanaan pembangunan daerah", "rumus": "(Jumlah indikator sasaran perangkat daerah yang tercapai ÷ jumlah seluruh indikator sasaran perangkat daerah) × 100%", "sat": "Persen", "F": 100, "g": 93.89, "h": 80, "pj": "Bidang Pemerintahan dan Pembangunan Manusia, Bidang Perekonomian dan SDA, Bidang Infrastruktur dan Kewilayahan"}, {"id": "iku_3", "no": "3", "sasaran": "Meningkatnya Tata Kelola Perangkat Daerah yang Akuntabel", "ind": "Nilai Evaluasi SAKIP Perangkat Daerah", "rumus": "Evaluasi menyeluruh terhadap 4 komponen utama (Perencanaan, Pengukuran, Pelaporan, Evaluasi Internal) berdasarkan Permenpan RB No. 88 Tahun 2021, dengan bobot masing-masing komponen dan subkomponen (Keberadaan, Kualitas, Pemanfaatan) yang dinilai untuk mendapatkan skor akhir, lalu dikategorikan menjadi predikat seperti 'A', 'BB', 'B', dst., yang mencerminkan tingkat akuntabilitas kinerja PD tersebut. \n\nSkor Akhir = (Skor Perencanaan x 30%) + (Skor Pengukuran x 25%) + (Skor Pelaporan x 20%) + (Skor Evaluasi Internal x 25%)", "sat": "Poin", "F": 81.04, "g": 78.04, "h": 78.54, "pj": "Sekretariat"}, {"id": "iku_4", "no": "4", "sasaran": "Meningkatnya kualitas dan kuantitas inovasi daerah", "ind": "Indeks Inovasi Daerah", "rumus": "Nilai Indeks Inovasi Daerah yang ditetapkan oleh Kementerian Dalam Negeri", "sat": "Poin", "F": 52.37, "g": 52.92, "h": 47.37, "pj": "Bidang Riset dan Inovasi Daerah"}, {"id": "iku_5", "no": "5", "sasaran": "Meningkatnya produk kebijakan daerah berbasis riset", "ind": "Persentase Produk Hukum yang dilakukan analisis naskah akademik / naskah kebijakan", "rumus": "(Jumlah Peraturan Daerah yang dilakukan analisis naskah akademik/naskah kebijakan ÷ jumlah seluruh Peraturan Daerah pada tahun yang sama) × 100%", "sat": "Persen", "F": 75, "g": 60, "h": 50, "pj": "Bidang Riset dan Inovasi Daerah"}]</script>
@@ -244,9 +244,10 @@ async function pull(){if(!API_URL)return;try{const r=await fetch(API_URL+'?key='
  catch(e){setSt('Gagal terhubung ke Google Sheets: '+e.message,1)}}
 if(!API_URL)setSt('Belum terhubung ke Google Sheets (mode lokal)',1);else{setSt('Menghubungkan…');pull();setInterval(pull,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()})}
 
-(()=>{const g=i=>document.getElementById(i),tI=g('tI'),tD=g('tD'),tK=g('tIku'),vK=g('vIku');
-tK.onclick=()=>{vK.hidden=false;g('vIsi').hidden=true;g('vDash').hidden=true;tI.className='';tD.className='';tK.className='pri'};
-[tI,tD].forEach(b=>b.addEventListener('click',()=>{vK.hidden=true;tK.className=''}))})();
+(()=>{const g=i=>document.getElementById(i),tI=g('tI'),tD=g('tD'),mR=g('mR'),mI=g('mI'),vK=g('vIku');
+const mode=k=>{const r=k==='R';mR.className='mn'+(r?' pri':'');mI.className='mn'+(r?'':' pri');g('subR').hidden=!r;g('subI').hidden=r;vK.hidden=r;
+ const dash=tD.classList.contains('pri');g('vIsi').hidden=!r||dash;g('vDash').hidden=!r||!dash};
+mR.onclick=()=>mode('R');mI.onclick=()=>mode('I')})();
 (()=>{
 const D=JSON.parse(document.getElementById('ikuseed').textContent),$=s=>document.querySelector(s),st={},E={},tm={},dirty={},lastEd={};
 const mk=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e};
@@ -257,7 +258,7 @@ const TX=['ket','pend','hamb','tl','bukti','link'],TL={ket:'Keterangan',pend:'Fa
 const TWN=['I','II','III','IV'];
 const norm=o=>{TX.forEach(k=>{if(Array.isArray(o[k]))o[k]=o[k].filter(Boolean).join('\n')});return o};
 D.forEach(d=>{const s=st[d.id]={g:d.g,h:d.h,pj:d.pj,tw:[null,null,null,null]};TX.forEach(k=>s[k]='')});
-const cap=(id,q)=>{const s=st[id],i=s.tw[q],h=s.h;return i==null||!h?null:(i>=h?1:i/h)*100};
+const cap=(id,q)=>{const s=st[id],i=s.tw[q],h=s.h;return i==null||!h?null:(IKU_BATASI_100&&i>=h?1:i/h)*100};
 const last=id=>{const t=st[id].tw;for(let q=3;q>=0;q--)if(t[q]!=null)return q;return -1};
 const LT=()=>Math.max(0,...D.map(d=>last(d.id)));
 const capL=id=>{const q=last(id);return q<0?null:cap(id,q)};
